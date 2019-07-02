@@ -121,8 +121,8 @@ class Utilities {
                     </select>`
                 },
                 set: val => {
-                    this.settings.customCrosshairImage.hide = this.settings.customCrosshair.val == 0 ? true: !(val == 3);
-                    this.settings.customCrosshairShadow.hide = this.settings.customCrosshair.val == 0 ? true: val == 3;
+                    this.settings.customCrosshairImage.hide = this.settings.customCrosshair.val == 0 ? true : !(val == 3);
+                    this.settings.customCrosshairShadow.hide = this.settings.customCrosshair.val == 0 ? true : val == 3;
                     let doc = document.getElementById('customCrosshairImage_div');
                     if (doc) doc.style.display = this.settings.customCrosshairImage.hide ? 'none' : 'block';
                     doc = document.getElementById('customCrosshairShadow_div');
@@ -260,7 +260,7 @@ class Utilities {
                 for (var key in window.utilities.settings) {
                     if (window.utilities.settings[key].noShow) continue;
                     if (window.utilities.settings[key].pre) tmpHTML += window.utilities.settings[key].pre;
-                    tmpHTML += "<div class='settName' id='" + key + "_div' style='display:" + (window.utilities.settings[key].hide ? 'none' : 'block') +"'>" + window.utilities.settings[key].name +
+                    tmpHTML += "<div class='settName' id='" + key + "_div' style='display:" + (window.utilities.settings[key].hide ? 'none' : 'block') + "'>" + window.utilities.settings[key].name +
                         " " + window.utilities.settings[key].html() + "</div>";
                 }
                 tmpHTML += "<br><a onclick='window.utilities.resetSettings()' class='menuLink'>Reset Settings</a>";
@@ -273,12 +273,12 @@ class Utilities {
     setupSettings() {
         for (const key in this.settings) {
             var tmpVal = getSavedVal(`kro_set_utilities_${key}`);
-            this.settings[key].val = (tmpVal!== null)?tmpVal:this.settings[key].val;
+            this.settings[key].val = (tmpVal !== null) ? tmpVal : this.settings[key].val;
             if (this.settings[key].val == "false") this.settings[key].val = false;
             if (this.settings[key].set) this.settings[key].set(this.settings[key].val, true);
         }
     }
-    
+
     joinGame() {
         let code = gameURL.value || '';
         if (code.match(/^(https?:\/\/)?(www\.)?(.+)krunker\.io(|\/|\/\?(server|party|game)=.+)$/)) {
@@ -310,17 +310,17 @@ class Utilities {
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;
             image-rendering: crisp-edges;`;
-        deathCounter.appendChild(deathIcon); 
+        deathCounter.appendChild(deathIcon);
 
         let deathsVal = document.createElement('span');
         deathsVal.id = 'deathsVal';
         deathsVal.style.color = 'rgba(255, 255, 255, 0.7)';
         deathsVal.innerHTML = '0';
-        deathCounter.appendChild(deathsVal);      
+        deathCounter.appendChild(deathsVal);
 
         topRight.appendChild(deathCounter);
     }
-    
+
     createCrosshair() {
         let div = document.createElement('div');
         div.id = 'custCross';
@@ -339,18 +339,18 @@ class Utilities {
         let crossH = document.createElement('div');
         crossH.id = 'crossH';
         crossH.style.cssText = crossS.style.cssText;
-        div.appendChild(crossH); 
+        div.appendChild(crossH);
 
         let crossV = document.createElement('div');
         crossV.id = 'crossV';
         crossV.style.cssText = crossS.style.cssText;
         div.appendChild(crossV);
-            
+
         let crossCirc = document.createElement('div');
         crossCirc.id = 'crossCirc';
         crossCirc.style.cssText = crossS.style.cssText;
-        div.appendChild(crossCirc); 
-            
+        div.appendChild(crossCirc);
+
         let crossImg = document.createElement('div');
         crossImg.id = 'crossImg';
         crossImg.style.cssText = `  
@@ -363,15 +363,15 @@ class Utilities {
             background-repeat: no-repeat;
             background-position: center;
             display: none`;
-        div.appendChild(crossImg); 
+        div.appendChild(crossImg);
 
-        inGameUI.appendChild(div); 
+        inGameUI.appendChild(div);
     }
-    
+
     updateCrosshair() {
         if (this.settings.customCrosshair.val == 0 || !this.settings.customCrosshairAlwaysShow.val && (aimDot.style.opacity != "0" || aimRecticle.style.opacity != "0")) return custCross.style.display = 'none';
         custCross.style.display = 'block';
-        
+
         let shadow = this.hexToRGB(this.settings.customCrosshairShadow.val);
         let thickness = parseInt(this.settings.customCrosshairThickness.val);
         let length = parseInt(this.settings.customCrosshairLength.val);
@@ -398,9 +398,9 @@ class Utilities {
             crossS.style.width = `${thickness}px`;
             crossS.style.backgroundColor = `${color}`;
             crossS.style.boxShadow = `0px 0px 5px 1px rgba(${shadow.join(',')},0.75)`;
-                
+
         } else if (shape == 3) { // IMAGE
-        
+
             crossV.style.display = 'none';
             crossH.style.display = 'none';
             crossS.style.display = 'none';
@@ -410,9 +410,9 @@ class Utilities {
             if (crossImg.style.backgroundImage != this.settings.customCrosshairImage.val) {
                 crossImg.style.backgroundImage = `url(${this.settings.customCrosshairImage.val})`;
             }
-            
+
         } else { // HOLLOW CIRCLE | FILLED CIRCLE
-        
+
             crossV.style.display = 'none';
             crossH.style.display = 'none';
             crossS.style.display = 'none';
@@ -424,14 +424,109 @@ class Utilities {
             crossCirc.style.backgroundColor = shape == 2 || shape == 5 ? `${color}` : ``;
             crossCirc.style.border = shape == 2 || shape == 5 ? `` : `${thickness}px solid ${color}`;
             crossCirc.style.boxShadow = `0px 0px 5px 1px rgba(${shadow.join(',')},0.75)`;
-            crossCirc.style.borderRadius = shape > 3 ? '':'50%';
+            crossCirc.style.borderRadius = shape > 3 ? '' : '50%';
 
         }
-        
+
     }
 
     createObservers() {
-        
+
+        //speak chat
+        this.newObserver(chatList, 'childList', (target) => {
+            if (!'SpeechSynthesisUtterance' in window) {
+                alert('Speech synthesis(音声合成) APIには未対応です.');
+                return;
+            }
+            // 発話機能をインスタンス化 ※コンストラクタあたりに貼り付ける
+            var msg = new SpeechSynthesisUtterance();
+            var voices = window.speechSynthesis.getVoices();
+            //console.log(voices);
+
+            //リセット
+            window.addEventListener('beforeunload', function(){
+                window.speechSynthesis.cancel();
+            });
+
+            // 以下オプション設定（日本語は効かないもよう。。）
+            msg.voice = voices[11]; // 11:Google 日本人 ja-JP ※他は英語のみ（次項参照） 0  Google US English en-US
+            // Voice一覧 https://codepen.io/rodhamjun/full/jQJEWQ/
+            msg.volume = 0.7; // 音量 0-1 初期値:1
+            msg.rate = 1.2; // 速度 0.1-10 初期値:1 (倍速なら2, 半分の倍速なら0.5)
+            msg.pitch = 1.4; // 高さ 0-2 初期値:1
+            msg.lang = 'ja-JP'; // 言語 (日本語:ja-JP, アメリカ英語:en-US, イギリス英語:en-GB, 中国語:zh-CN, 韓国語:ko-KR)
+            var chatcolor = "#00aaaa";
+            console.log (msg);
+
+            var chatlog = target.getElementsByClassName("chatItem");
+            chatlog = chatlog[chatlog.length-1];
+
+            var chattarget = target;
+            //チャットログに : が含まれる = 人間の発言。
+            if (chatlog.innerText.indexOf(": ") != -1 ) {
+                chatlog.style.background = chatcolor;
+
+                chattarget = chattarget.getElementsByClassName("chatMsg");
+                chattarget = chattarget[chattarget.length-1].innerText;
+                msg.text = chattarget; // 喋る内容
+                speechSynthesis.speak(msg); // 発話実行
+            }
+        }, false);
+
+        // show match information
+        this.newObserver(timerVal, 'childList', (target) => {
+            var timer = target.innerText;
+            //console.log( "timerVal:" + timer );
+            //document.getElementById("instructions").style.fontSize = "10px";
+
+            if ( timer != "" ) {
+                var viewinfo = "";
+                viewinfo = " MatchTime : " + timer + " ";
+
+                var kicktime = Math.round( 90 - ( window.idleTimer / 1000 ) );
+                viewinfo += "TimeOut : " + kicktime + "\n";
+
+                viewinfo += "Map : " + document.getElementById("mapInfo").innerText + "\n";
+
+                if( document.getElementById("curGameInfo").innerText !== "Free for All" ) {
+                    viewinfo += "[team1]" + document.getElementById("tScoreV1").innerText + " ";
+                    viewinfo += "[team2]" + document.getElementById("tScoreV2").innerText + "\n";
+                }
+
+                var leaderItem = document.getElementsByClassName("leaderItem");
+
+                viewinfo += leaderItem.length + " people\n";
+
+                //console.log(leaderItem.length);
+                for(var i=0; i<leaderItem.length; i++) {
+                    if( leaderItem[i] ) { //指定のIndexが存在する
+                        //console.log(leaderItem[i].getElementsByClassName("leaderCounter"));
+                        var leaderCounter = leaderItem[i].getElementsByClassName("leaderCounter")[0].innerText;
+
+                        var leaderName;
+                        if ( leaderItem[i].getElementsByClassName("leaderName")[0] ) {
+                            leaderName = leaderItem[i].getElementsByClassName("leaderName")[0].innerText;
+                        } else if ( leaderItem[i].getElementsByClassName("leaderNameF")[0] ) {
+                            leaderName = leaderItem[i].getElementsByClassName("leaderNameF")[0].innerText;
+                        } else if ( leaderItem[i].getElementsByClassName("leaderNameM")[0] ) {
+                            leaderName = leaderItem[i].getElementsByClassName("leaderNameM")[0].innerText;
+                        } else {
+                            break;
+                        }
+                        var leaderScore = leaderItem[i].getElementsByClassName("leaderScore")[0].innerText;
+                        viewinfo += leaderCounter + " " + leaderName + " " + leaderScore + "\n";
+                    } else {
+                        break;
+                    }
+                }
+
+                document.getElementById("instructions").innerText = viewinfo;
+            }
+        }, false);
+
+
+
+
         this.newObserver(aimDot, 'src', (target) => {
             if (this.settings.customADSDot.val.length > 1) {
                 if (this.settings.customADSDot.val != target.src) {
@@ -439,16 +534,16 @@ class Utilities {
                 }
             }
         });
-        
+
         this.newObserver(killCardHolder, 'style', () => {
             this.deaths++;
-            deathsVal.innerHTML = this.deaths; 
+            deathsVal.innerHTML = this.deaths;
         });
 
         this.newObserver(victorySub, 'src', () => {
             this.deaths = 0;
             deathsVal.innerHTML = this.deaths;
-            
+
             if (this.settings.matchEndMessage.val.length) {
                 if (Date.now() - this.lastSent > 20) {
                     this.sendMessage(this.settings.matchEndMessage.val);
@@ -456,17 +551,17 @@ class Utilities {
                 }
             }
         });
-        
+
         this.newObserver(instructionHolder, 'style', (target) => {
             if (this.settings.autoFindNew.val) {
                 if (target.innerText.includes('Try seeking a new game') &&
                     !target.innerText.includes('Kicked for inactivity')) {
-                        location = document.location.origin;
-                    }
+                    location = document.location.origin;
+                }
             }
         });
     }
-    
+
     newObserver(elm, check, callback, onshow = true) {
         return new MutationObserver((mutationsList, observer) => {
             if (check == 'src' || onshow && mutationsList[0].target.style.display == 'block' || !onshow) {
@@ -474,7 +569,7 @@ class Utilities {
             }
         }).observe(elm, check == 'childList' ? {childList: true} : {attributes: true, attributeFilter: [check]});
     }
-    
+
     sendMessage(msg) {
         chatInput.value = msg;
         chatInput.focus()
@@ -501,7 +596,7 @@ class Utilities {
 
     resetSettings() {
         if (confirm("Are you sure you want to reset all your utilties settings? This will also refresh the page")) {
-            Object.keys(localStorage).filter(x=>x.includes("kro_set_utilities_")).forEach(x => localStorage.removeItem(x));
+            Object.keys(localStorage).filter(x => x.includes("kro_set_utilities_")).forEach(x => localStorage.removeItem(x));
             location.reload();
         }
     }
@@ -515,7 +610,7 @@ class Utilities {
 
     keyDown(event) {
         if (document.activeElement.tagName == "INPUT") return;
-        switch(event.key){
+        switch (event.key) {
             case '`':
                 if (event.ctrlKey || event.shiftKey) return;
                 document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
@@ -528,7 +623,8 @@ class Utilities {
     onLoad() {
         this.createCrosshair();
         this.createWatermark();
-        this.createDeathCounter();;
+        this.createDeathCounter();
+        ;
         this.createSettings();
         this.createObservers();
         window.addEventListener("keydown", event => this.keyDown(event));
