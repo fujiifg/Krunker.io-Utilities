@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         Krunker.io Utilities Mod
-// @description  Krunker.io Mod
-// @updateURL    https://github.com/Tehchy/Krunker.io-Utilities/raw/master/lite.user.js
-// @downloadURL  https://github.com/Tehchy/Krunker.io-Utilities/raw/master/lite.user.js
+// @name         Krunker.io Utilities Mod +
+// @description  Krunker.io Mod +
+// @updateURL    https://github.com/fujiifg/Krunker.io-Utilities/raw/master/lite.user.js
+// @downloadURL  https://github.com/fujiifg/Krunker.io-Utilities/raw/master/lite.user.js
 // @version      0.5.1
-// @author       Tehchy
+// @author       FUJII_FG
 // @include      /^(https?:\/\/)?(www\.)?(.+)krunker\.io(|\/|\/\?.+)$/
 // @grant        none
 // @run-at       document-start
@@ -22,6 +22,13 @@ class Utilities {
         const selectStyle = `border: none; background: #eee; padding: 4px; float: right; margin-left: 10px;`;
         const textInputStyle = `border: none; background: #eee; padding: 6px; padding-bottom: 6px; float: right;`;
         this.settings = {
+            Yomiage: {
+                name: "Yomiage",
+                val: false,
+                html: _ => {
+                    return `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("Yomiage", this.checked)' ${this.settings.Yomiage.val ? "checked" : ""}><span class='slider'></span></label>`;
+                }
+            },
             showLeaderboard: {
                 name: "Show Leaderboard",
                 pre: "<div class='setHed'><center>Utilities</center></div><div class='setHed'>Render</div><hr>",
@@ -101,16 +108,7 @@ class Utilities {
                 set: val => {
                     timerIcon.src = val.length > 1 ? val : location.origin + '/img/timer.png';
                 }
-            },
-
-            Yomiage: {
-                name: "Yomiage",
-                val: false,
-                html: _ => {
-                    return `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("Yomiage", this.checked)' ${this.settings.Yomiage.val ? "checked" : ""}><span class='slider'></span></label>`;
-                }
             }
-
 
         };
         window.windows.push({
@@ -143,42 +141,44 @@ class Utilities {
 
         //speak chat
         this.newObserver(chatList, 'childList', (target) => {
-            if (!'SpeechSynthesisUtterance' in window) {
-                alert('Speech synthesis(音声合成) APIには未対応です.');
-                return;
-            }
-            // 発話機能をインスタンス化 ※コンストラクタあたりに貼り付ける
-            var msg = new SpeechSynthesisUtterance();
-            var voices = window.speechSynthesis.getVoices();
-            //console.log(voices);
+            if (this.settings.Yomiage.val) {
+                if (!'SpeechSynthesisUtterance' in window) {
+                    alert('Speech synthesis(音声合成) APIには未対応です.');
+                    return;
+                }
+                // 発話機能をインスタンス化 ※コンストラクタあたりに貼り付ける
+                var msg = new SpeechSynthesisUtterance();
+                var voices = window.speechSynthesis.getVoices();
+                //console.log(voices);
 
-            //リセット
-            window.addEventListener('beforeunload', function(){
-                window.speechSynthesis.cancel();
-            });
+                //リセット
+                window.addEventListener('beforeunload', function () {
+                    window.speechSynthesis.cancel();
+                });
 
-            // 以下オプション設定（日本語は効かないもよう。。）
-            msg.voice = voices[11]; // 11:Google 日本人 ja-JP ※他は英語のみ（次項参照） 0  Google US English en-US
-            // Voice一覧 https://codepen.io/rodhamjun/full/jQJEWQ/
-            msg.volume = 0.7; // 音量 0-1 初期値:1
-            msg.rate = 1.2; // 速度 0.1-10 初期値:1 (倍速なら2, 半分の倍速なら0.5)
-            msg.pitch = 1.4; // 高さ 0-2 初期値:1
-            msg.lang = 'ja-JP'; // 言語 (日本語:ja-JP, アメリカ英語:en-US, イギリス英語:en-GB, 中国語:zh-CN, 韓国語:ko-KR)
-            var chatcolor = "#00aaaa";
-            console.log (msg);
+                // 以下オプション設定（日本語は効かないもよう。。）
+                msg.voice = voices[11]; // 11:Google 日本人 ja-JP ※他は英語のみ（次項参照） 0  Google US English en-US
+                // Voice一覧 https://codepen.io/rodhamjun/full/jQJEWQ/
+                msg.volume = 0.7; // 音量 0-1 初期値:1
+                msg.rate = 1.2; // 速度 0.1-10 初期値:1 (倍速なら2, 半分の倍速なら0.5)
+                msg.pitch = 1.4; // 高さ 0-2 初期値:1
+                msg.lang = 'ja-JP'; // 言語 (日本語:ja-JP, アメリカ英語:en-US, イギリス英語:en-GB, 中国語:zh-CN, 韓国語:ko-KR)
+                var chatcolor = "#00aaaa";
+                console.log(msg);
 
-            var chatlog = target.getElementsByClassName("chatItem");
-            chatlog = chatlog[chatlog.length-1];
+                var chatlog = target.getElementsByClassName("chatItem");
+                chatlog = chatlog[chatlog.length - 1];
 
-            var chattarget = target;
-            //チャットログに : が含まれる = 人間の発言。
-            if (chatlog.innerText.indexOf(": ") != -1 ) {
-                chatlog.style.background = chatcolor;
+                var chattarget = target;
+                //チャットログに : が含まれる = 人間の発言。
+                if (chatlog.innerText.indexOf(": ") != -1) {
+                    chatlog.style.background = chatcolor;
 
-                chattarget = chattarget.getElementsByClassName("chatMsg");
-                chattarget = chattarget[chattarget.length-1].innerText;
-                msg.text = chattarget; // 喋る内容
-                speechSynthesis.speak(msg); // 発話実行
+                    chattarget = chattarget.getElementsByClassName("chatMsg");
+                    chattarget = chattarget[chattarget.length - 1].innerText;
+                    msg.text = chattarget; // 喋る内容
+                    speechSynthesis.speak(msg); // 発話実行
+                }
             }
         }, false);
 
@@ -197,17 +197,18 @@ class Utilities {
 
                 viewinfo += "Map : " + document.getElementById("mapInfo").innerText + "\n";
 
-                if( document.getElementById("curGameInfo").innerText !== "Free for All" ) {
-                    viewinfo += "[team1]" + document.getElementById("tScoreV1").innerText + " ";
-                    viewinfo += "[team2]" + document.getElementById("tScoreV2").innerText + "\n";
-                }
-
-
-                /*
                 var leaderItem = document.getElementsByClassName("leaderItem");
 
                 viewinfo += leaderItem.length + " people\n";
 
+                //チーム別スコア
+                if( document.getElementById("curGameInfo").innerText.substr(0,12) !== "Free for All" ) {
+                    viewinfo += "[team1]" + document.getElementById("tScoreV1").innerText + " ";
+                    viewinfo += "[team2]" + document.getElementById("tScoreV2").innerText + "\n";
+                }
+
+                var teamAcnt = 0;
+                var teamBcnt = 0;
                 //console.log(leaderItem.length);
                 for(var i=0; i<leaderItem.length; i++) {
                     if( leaderItem[i] ) { //指定のIndexが存在する
@@ -217,10 +218,13 @@ class Utilities {
                         var leaderName;
                         if ( leaderItem[i].getElementsByClassName("leaderName")[0] ) {
                             leaderName = leaderItem[i].getElementsByClassName("leaderName")[0].innerText;
+                            teamAcnt++;
                         } else if ( leaderItem[i].getElementsByClassName("leaderNameF")[0] ) {
                             leaderName = leaderItem[i].getElementsByClassName("leaderNameF")[0].innerText;
+                            teamBcnt++;
                         } else if ( leaderItem[i].getElementsByClassName("leaderNameM")[0] ) {
                             leaderName = leaderItem[i].getElementsByClassName("leaderNameM")[0].innerText;
+                            teamBcnt++;
                         } else {
                             break;
                         }
@@ -230,7 +234,8 @@ class Utilities {
                         break;
                     }
                 }
-                */
+
+                //viewinfo += teamAcnt + " " + teamBcnt;
 
                 document.getElementById("instructions").innerText = viewinfo;
             }
