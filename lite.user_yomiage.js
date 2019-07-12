@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Krunker.io Utilities Mod
 // @description  Krunker.io Mod
-// @updateURL    https://github.com/Tehchy/Krunker.io-Utilities/raw/master/lite.user.js
-// @downloadURL  https://github.com/Tehchy/Krunker.io-Utilities/raw/master/lite.user.js
+// @updateURL    https://github.com/Tehchy/Krunker.io-Utilities/raw/master/lite.user_yomiage.js
+// @downloadURL  https://github.com/Tehchy/Krunker.io-Utilities/raw/master/lite.user_yomiage.js
 // @version      0.5.1
 // @author       Tehchy
 // @include      /^(https?:\/\/)?(www\.)?(.+)krunker\.io(|\/|\/\?.+)$/
