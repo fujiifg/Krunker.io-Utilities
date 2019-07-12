@@ -101,7 +101,17 @@ class Utilities {
                 set: val => {
                     timerIcon.src = val.length > 1 ? val : location.origin + '/img/timer.png';
                 }
+            },
+
+            Yomiage: {
+                name: "Yomiage",
+                val: false,
+                html: _ => {
+                    return `<label class='switch'><input type='checkbox' onclick='window.utilities.setSetting("Yomiage", this.checked)' ${this.settings.Yomiage.val ? "checked" : ""}><span class='slider'></span></label>`;
+                }
             }
+
+
         };
         window.windows.push({
             header: "Utilities",
@@ -192,6 +202,8 @@ class Utilities {
                     viewinfo += "[team2]" + document.getElementById("tScoreV2").innerText + "\n";
                 }
 
+
+                /*
                 var leaderItem = document.getElementsByClassName("leaderItem");
 
                 viewinfo += leaderItem.length + " people\n";
@@ -218,6 +230,7 @@ class Utilities {
                         break;
                     }
                 }
+                */
 
                 document.getElementById("instructions").innerText = viewinfo;
             }
