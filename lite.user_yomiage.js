@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name         Krunker.io Utilities Mod
+// @name         Krunker.io yomiage Mod
 // @description  Krunker.io Mod
-// @updateURL    https://github.com/Tehchy/Krunker.io-Utilities/raw/master/lite.user_yomiage.js
-// @downloadURL  https://github.com/Tehchy/Krunker.io-Utilities/raw/master/lite.user_yomiage.js
+// @updateURL    https://github.com/fujiifg/Krunker.io-Utilities/raw/master/lite.user_yomiage.js
+// @downloadURL  https://github.com/fujiifg/Krunker.io-Utilities/raw/master/lite.user_yomiage.js
 // @version      0.5.1
-// @author       Tehchy
+// @author       fujiifg
 // @include      /^(https?:\/\/)?(www\.)?(.+)krunker\.io(|\/|\/\?.+)$/
 // @grant        none
 // @run-at       document-start
