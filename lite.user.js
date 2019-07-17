@@ -3,7 +3,7 @@
 // @description  Krunker.io Mod +
 // @updateURL    https://github.com/fujiifg/Krunker.io-Utilities/raw/master/lite.user.js
 // @downloadURL  https://github.com/fujiifg/Krunker.io-Utilities/raw/master/lite.user.js
-// @version      0.5.1
+// @version      0.5.1.1
 // @author       FUJII_FG
 // @include      /^(https?:\/\/)?(www\.)?(.+)krunker\.io(|\/|\/\?.+)$/
 // @grant        none
@@ -118,7 +118,7 @@ class Utilities {
                 for (var key in window.utilities.settings) {
                     if (window.utilities.settings[key].noShow) continue;
                     if (window.utilities.settings[key].pre) tmpHTML += window.utilities.settings[key].pre;
-                    tmpHTML += "<div class='settName' id='" + key + "_div' style='display:" + (window.utilities.settings[key].hide ? 'none' : 'block') +"'>" + window.utilities.settings[key].name +
+                    tmpHTML += "<div class='settName' id='" + key + "_div' style='display:" + (window.utilities.settings[key].hide ? 'none' : 'block') + "'>" + window.utilities.settings[key].name +
                         " " + window.utilities.settings[key].html() + "</div>";
                 }
                 tmpHTML += "<br><a onclick='window.utilities.resetSettings()' class='menuLink'>Reset Settings</a>";
@@ -131,7 +131,7 @@ class Utilities {
     setupSettings() {
         for (const key in this.settings) {
             var tmpVal = getSavedVal(`kro_set_utilities_${key}`);
-            this.settings[key].val = (tmpVal!== null)?tmpVal:this.settings[key].val;
+            this.settings[key].val = (tmpVal !== null) ? tmpVal : this.settings[key].val;
             if (this.settings[key].val == "false") this.settings[key].val = false;
             if (this.settings[key].set) this.settings[key].set(this.settings[key].val, true);
         }
@@ -188,11 +188,11 @@ class Utilities {
             //console.log( "timerVal:" + timer );
             //document.getElementById("instructions").style.fontSize = "10px";
 
-            if ( timer != "" ) {
+            if (timer != "") {
                 var viewinfo = "";
                 viewinfo = " MatchTime : " + timer + " ";
 
-                var kicktime = Math.round( 90 - ( window.idleTimer / 1000 ) );
+                var kicktime = Math.round(90 - (window.idleTimer / 1000));
                 viewinfo += "TimeOut : " + kicktime + "\n";
 
                 viewinfo += "Map : " + document.getElementById("mapInfo").innerText + "\n";
@@ -202,7 +202,7 @@ class Utilities {
                 viewinfo += leaderItem.length + " people\n";
 
                 //チーム別スコア
-                if( document.getElementById("curGameInfo").innerText.substr(0,12) !== "Free for All" ) {
+                if (document.getElementById("curGameInfo").innerText.substr(0, 12) !== "Free for All") {
                     viewinfo += "[team1]" + document.getElementById("tScoreV1").innerText + " ";
                     viewinfo += "[team2]" + document.getElementById("tScoreV2").innerText + "\n";
                 }
@@ -210,19 +210,19 @@ class Utilities {
                 var teamAcnt = 0;
                 var teamBcnt = 0;
                 //console.log(leaderItem.length);
-                for(var i=0; i<leaderItem.length; i++) {
-                    if( leaderItem[i] ) { //指定のIndexが存在する
+                for (var i = 0; i < leaderItem.length; i++) {
+                    if (leaderItem[i]) { //指定のIndexが存在する
                         //console.log(leaderItem[i].getElementsByClassName("leaderCounter"));
                         var leaderCounter = leaderItem[i].getElementsByClassName("leaderCounter")[0].innerText;
 
                         var leaderName;
-                        if ( leaderItem[i].getElementsByClassName("leaderName")[0] ) {
+                        if (leaderItem[i].getElementsByClassName("leaderName")[0]) {
                             leaderName = leaderItem[i].getElementsByClassName("leaderName")[0].innerText;
                             teamAcnt++;
-                        } else if ( leaderItem[i].getElementsByClassName("leaderNameF")[0] ) {
+                        } else if (leaderItem[i].getElementsByClassName("leaderNameF")[0]) {
                             leaderName = leaderItem[i].getElementsByClassName("leaderNameF")[0].innerText;
                             teamBcnt++;
-                        } else if ( leaderItem[i].getElementsByClassName("leaderNameM")[0] ) {
+                        } else if (leaderItem[i].getElementsByClassName("leaderNameM")[0]) {
                             leaderName = leaderItem[i].getElementsByClassName("leaderNameM")[0].innerText;
                             teamBcnt++;
                         } else {
@@ -240,6 +240,57 @@ class Utilities {
                 document.getElementById("instructions").innerText = viewinfo;
             }
         }, false);
+
+        /*
+        this.newObserver(serverFilters, 'style', (target) => {
+            console.log("aaaa");
+        }, false);
+*/
+
+        //カスタムサーバで東京鯖のみに絞り込んで表示 ---------------------------
+        // 対象とするノードを取得
+        const mutTarget2 = document.getElementById("menuWindow");
+        //console.log(mutTarget2);
+        // オブザーバインスタンスを作成
+        const observer2 = new MutationObserver(function (mutation) {
+            //監視の一時停止
+            observer2.disconnect();
+            //サーバ選択
+            //var t = mutation[0].target;
+            var a = document.getElementById("serverHolder");
+            if (a) {
+                var b = a.getElementsByClassName("menuSelector");
+                var insertFunction = (function (param) {
+                    return param[0].replace(/\n|\r/g, "");
+                })`
+<div style="text-align:center;margin-top:-30px;margin-bottom:5px;"><div style="color:#919191;margin-bottom:5px" id="hostGameMsg"></div>
+<a id="tokonly" class="menuLink"> [TokyoOnly] </a>
+</div>
+`;
+
+                //var serverFiltersSwitch = document.getElementById("serverFilters");
+                a.insertAdjacentHTML('afterbegin', insertFunction);
+                document.getElementById("tokonly").onclick = function () {
+                    for (var i = 0; i < b.length; i++) {
+                        if (b[i].attributes[1].textContent.indexOf("TOK:") == -1) {
+                            b[i].style.display = "none";
+                            //console.log("not tokyo" + b[i].attributes[1].textContent );
+                        }
+                    }
+                };
+            }
+            //監視の再開
+            observer2.observe(mutTarget2, config2);
+        });
+        // オブザーバの設定
+        const config2 = {
+            //attributes: true, attributeOldValue: true, characterData: true, characterDataOldValue: true, subtree: true,
+            childList: true
+        };
+        // 対象ノードとオブザーバの設定を渡す
+        observer2.observe(mutTarget2, config2);
+        //--------------------------------------------
+
 
         this.newObserver(instructionHolder, 'style', (target) => {
             if (this.settings.autoFindNew.val) {
@@ -273,7 +324,7 @@ class Utilities {
 
     resetSettings() {
         if (confirm("Are you sure you want to reset all your utilties settings? This will also refresh the page")) {
-            Object.keys(localStorage).filter(x=>x.includes("kro_set_utilities_")).forEach(x => localStorage.removeItem(x));
+            Object.keys(localStorage).filter(x => x.includes("kro_set_utilities_")).forEach(x => localStorage.removeItem(x));
             location.reload();
         }
     }
@@ -287,7 +338,7 @@ class Utilities {
 
     keyDown(event) {
         if (document.activeElement.tagName == "INPUT") return;
-        switch(event.key){
+        switch (event.key) {
             case '`':
                 if (event.ctrlKey || event.shiftKey) return;
                 document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
